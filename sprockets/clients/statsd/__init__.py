@@ -126,7 +126,8 @@ def add_timing(*args, **kwargs):
     :param int|float value: The time value
 
     """
-    _send('.'.join(args), kwargs.get('value', 0), 'ms')
+    _send(
+        '.'.join(args), kwargs.get('value', 0), 'ms', tags=kwargs.get('tags'))
 
 
 def incr(*args, **kwargs):
@@ -143,7 +144,7 @@ def incr(*args, **kwargs):
     :param int|float value: The value to increment by
 
     """
-    _send('.'.join(args), kwargs.get('value', 1), 'c')
+    _send('.'.join(args), kwargs.get('value', 1), 'c', tags=kwargs.get('tags'))
 
 
 def set_gauge(*args, **kwargs):
@@ -160,10 +161,10 @@ def set_gauge(*args, **kwargs):
     :param int|float value: The gauge value
 
     """
-    _send('.'.join(args), kwargs.get('value', 0), 'g')
+    _send('.'.join(args), kwargs.get('value', 0), 'g', tags=kwargs.get('tags'))
 
 
-def _send(key, value, metric_type):
+def _send(key, value, metric_type, tags=None):
     """Send the specified value to the statsd daemon via UDP without a
     direct socket connection.
 
@@ -172,10 +173,10 @@ def _send(key, value, metric_type):
     """
     if STATSD_PREFIX:
         key = '.'.join([STATSD_PREFIX, key])
+    message = '{0}:{1}|{2}'.format(key, value, metric_type)
+    if tags:
+        message = '{0}|#{1}'.format(message, ",".join(tags))
     try:
-        STATSD_SOCKET.sendto('{0}:{1}|{2}'.format(key,
-                                                  value,
-                                                  metric_type).encode(),
-                             STATSD_ADDR)
+        STATSD_SOCKET.sendto(message.encode(), STATSD_ADDR)
     except socket.error:
         LOGGER.exception(SOCKET_ERROR)

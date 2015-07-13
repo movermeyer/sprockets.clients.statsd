@@ -47,12 +47,21 @@ class AddTimingTests(unittest.TestCase):
     def test_single_delimited_key_invokes_send(self):
         with mock.patch('sprockets.clients.statsd._send') as send:
             statsd.add_timing('foo.bar.baz', value=3.14159)
-            send.assert_called_once_with('foo.bar.baz', 3.14159, 'ms')
+            send.assert_called_once_with(
+                'foo.bar.baz', 3.14159, 'ms', tags=None)
 
     def test_invokes_statsd_send_default_value(self):
         with mock.patch('sprockets.clients.statsd._send') as send:
             statsd.add_timing('foo', 'bar', 'baz', 'qux', value=1.123)
-            send.assert_called_once_with('foo.bar.baz.qux', 1.123, 'ms')
+            send.assert_called_once_with(
+                'foo.bar.baz.qux', 1.123, 'ms', tags=None)
+
+    def test_passing_tags_sends_tags(self):
+        with mock.patch('sprockets.clients.statsd._send') as send:
+            statsd.add_timing(
+                'foo', 'bar', 'baz', 'qux', value=1.123, tags=['norf'])
+            send.assert_called_once_with(
+                'foo.bar.baz.qux', 1.123, 'ms', tags=['norf'])
 
 
 class IncrTests(unittest.TestCase):
@@ -60,12 +69,20 @@ class IncrTests(unittest.TestCase):
     def test_single_delimited_key_invokes_send(self):
         with mock.patch('sprockets.clients.statsd._send') as send:
             statsd.incr('foo.bar.baz', value=2)
-            send.assert_called_once_with('foo.bar.baz', 2, 'c')
+            send.assert_called_once_with(
+                'foo.bar.baz', 2, 'c', tags=None)
 
     def test_invokes_statsd_send_default_value(self):
         with mock.patch('sprockets.clients.statsd._send') as send:
             statsd.incr('foo', 'bar', 'baz', 'qux')
-            send.assert_called_once_with('foo.bar.baz.qux', 1, 'c')
+            send.assert_called_once_with(
+                'foo.bar.baz.qux', 1, 'c', tags=None)
+
+    def test_passing_tags_sends_tags(self):
+        with mock.patch('sprockets.clients.statsd._send') as send:
+            statsd.incr('foo', 'bar', 'baz', 'qux', tags=['norf'])
+            send.assert_called_once_with(
+                'foo.bar.baz.qux', 1, 'c', tags=['norf'])
 
 
 class SetGaugeTests(unittest.TestCase):
@@ -73,9 +90,18 @@ class SetGaugeTests(unittest.TestCase):
     def test_single_delimited_key_invokes_send(self):
         with mock.patch('sprockets.clients.statsd._send') as send:
             statsd.set_gauge('foo.bar.baz', value=20)
-            send.assert_called_once_with('foo.bar.baz', 20, 'g')
+            send.assert_called_once_with(
+                'foo.bar.baz', 20, 'g', tags=None)
 
     def test_invokes_statsd_send_default_value(self):
         with mock.patch('sprockets.clients.statsd._send') as send:
             statsd.set_gauge('foo', 'bar', 'baz', 'qux', value=99)
-            send.assert_called_once_with('foo.bar.baz.qux', 99, 'g')
+            send.assert_called_once_with(
+                'foo.bar.baz.qux', 99, 'g', tags=None)
+
+    def test_passing_tags_sends_tags(self):
+        with mock.patch('sprockets.clients.statsd._send') as send:
+            statsd.set_gauge(
+                'foo', 'bar', 'baz', 'qux', value=99, tags=['norf'])
+            send.assert_called_once_with(
+                'foo.bar.baz.qux', 99, 'g', tags=['norf'])
