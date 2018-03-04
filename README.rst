@@ -60,8 +60,8 @@ Available at https://sprocketsclientsstatsd.readthedocs.org/en/latest/history.ht
 .. |Coverage| image:: https://img.shields.io/coveralls/sprockets/sprockets.clients.statsd.svg?
    :target: https://coveralls.io/r/sprockets/sprockets.clients.statsd
 
-.. |Downloads| image:: https://pypip.in/d/sprockets.clients.statsd/badge.svg?
+.. |Downloads| image:: https://img.shields.io/pypi/dm/sprockets.clients.statsd.svg
    :target: https://pypi.python.org/pypi/sprockets.clients.statsd
 
-.. |License| image:: https://pypip.in/license/sprockets.clients.statsd/badge.svg?
+.. |License| image:: https://img.shields.io/pypi/l/sprockets.clients.statsd.svg
    :target: https://sprocketsclientsstatsd.readthedocs.org
